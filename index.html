@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora 3D Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 border-b-4 border-blue-500 pb-2">Orçamento Impressão 3D</h1>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Peso da Peça (gramas)</label>
+                <input type="number" id="peso" class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Tempo de Impressão (horas)</label>
+                <input type="number" id="tempo" class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Preço Filamento (kg)</label>
+                    <input type="number" id="precoFilamento" value="130" class="w-full mt-1 p-3 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Margem Lucro (%)</label>
+                    <input type="number" id="lucro" value="100" class="w-full mt-1 p-3 border rounded-lg">
+                </div>
+            </div>
+
+            <button onclick="calcular()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition duration-200">
+                GERAR ORÇAMENTO
+            </button>
+        </div>
+
+        <div id="resultado" class="mt-8 p-6 bg-blue-50 rounded-xl hidden">
+            <p class="text-sm text-blue-600 font-semibold uppercase">Valor Estimado</p>
+            <p id="valorFinal" class="text-4xl font-black text-blue-900 mt-1">R$ 0,00</p>
+            <p class="text-xs text-gray-500 mt-4 leading-relaxed">
+                *O valor final pode variar conforme o acabamento e complexidade da peça.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            const peso = parseFloat(document.getElementById('peso').value);
+            const tempo = parseFloat(document.getElementById('tempo').value);
+            const precoKg = parseFloat(document.getElementById('precoFilamento').value);
+            const margem = parseFloat(document.getElementById('lucro').value) / 100;
+
+            if(!peso || !tempo) return alert("Por favor, preencha o peso e o tempo.");
+
+            // Custos Fixos (Energia, Manutenção, Depreciação) - Média Brasil
+            const custoHoraMaquina = 2.80; 
+            
+            const custoMaterial = (peso / 1000) * precoKg;
+            const custoOperacional = tempo * custoHoraMaquina;
+            
+            const custoTotal = custoMaterial + custoOperacional;
+            const precoFinal = custoTotal * (1 + margem);
+
+            document.getElementById('valorFinal').innerText = precoFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('resultado').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
