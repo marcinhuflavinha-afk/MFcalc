@@ -3,186 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MF CALC Premium</title>
+    <title>MF CALC - Business Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        input[type="range"] { accent-color: #6366f1; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .grid-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .card-stats { border-left: 4px solid #6366f1; }
+        .input-group:focus-within label { color: #6366f1; }
     </style>
 </head>
-<body class="bg-[#f8fafc] min-h-screen text-slate-800 p-4 md:p-8">
+<body class="bg-[#f1f5f9] min-h-screen text-slate-800 font-sans">
 
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+    <header class="bg-indigo-950 text-white p-4 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-chart-line text-indigo-400 text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-tight">SISTEMA DE PRECIFICAÇÃO 3D</h1>
+            </div>
+            <div class="text-xs text-indigo-200 font-mono">V 2.0 | CONFIG: SHOPEE CNPJ</div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <div class="lg:w-1/2 space-y-6">
-            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                <h2 class="text-xl font-bold mb-6">Detalhes do projeto</h2>
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white rounded-3xl shadow-xl p-6 border border-slate-200">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-edit text-indigo-600"></i> Dados da Peça</h2>
                 
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Nome da peça</label>
-                            <input type="text" id="nomePeca" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: Action Figure">
-                        </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Perfil da impressora</label>
-                            <select id="impressora" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl appearance-none">
-                                <option>Bambu Lab A1</option>
-                                <option>Bambu Lab P1P</option>
-                            </select>
-                        </div>
+                <div class="grid grid-cols-1 gap-5">
+                    <div class="input-group">
+                        <label class="text-[10px] uppercase font-black text-slate-400 ml-1">Nome do Produto</label>
+                        <input type="text" id="produto" placeholder="Ex: Trava Porta" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all">
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                        <div class="flex justify-between text-xs font-bold uppercase text-slate-400 mb-4">
-                            <span>Filamento</span>
-                            <span>Peso Total: <span id="pesoDisplay">0</span>g</span>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label class="text-[10px] uppercase font-black text-slate-400 ml-1">Peso (g)</label>
+                            <input type="number" id="peso" oninput="calcular()" value="25" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
                         </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="col-span-1">
-                                <select class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm"><option>PLA</option></select>
-                            </div>
-                            <div>
-                                <input type="number" id="custoKg" value="95" class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm font-bold text-indigo-600">
-                            </div>
-                            <div>
-                                <input type="number" id="pesoG" value="0" oninput="calcularTudo()" class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm font-bold">
-                            </div>
+                        <div class="input-group">
+                            <label class="text-[10px] uppercase font-black text-slate-400 ml-1">Tempo (h)</label>
+                            <input type="number" id="tempo" oninput="calcular()" value="1" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Tempo Impressão (hrs)</label>
-                            <input type="number" id="tempoHrs" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                        <div class="input-group">
+                            <label class="text-[10px] uppercase font-black text-slate-400 ml-1">Margem Desejada (%)</label>
+                            <input type="number" id="margem" oninput="calcular()" value="100" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-indigo-600">
                         </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Mão de obra (min)</label>
-                            <input type="number" id="maoObra" value="10" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                        <div class="input-group">
+                            <label class="text-[10px] uppercase font-black text-slate-400 ml-1">Consumíveis (R$)</label>
+                            <input type="number" id="consumiveis" oninput="calcular()" value="0" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block text-xs">Custo Hardware (Parafuso, etc)</label>
-                            <input type="number" id="hardware" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-orange-700 uppercase">Participar de Campanha Shopee (+2,5%)?</span>
+                            <input type="checkbox" id="campanha" onchange="calcular()" class="w-5 h-5 accent-orange-500">
                         </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-500 mb-2 block text-xs">Custo Embalagem</label>
-                            <input type="number" id="embalagem" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-900 rounded-3xl shadow-xl p-6 text-white">
+                <h2 class="text-sm font-bold uppercase opacity-60 mb-4 tracking-widest">Resumo de Custos (Base Planilha)</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between border-b border-indigo-800 pb-2">
+                        <span class="text-indigo-300">Material (R$ 96/kg)</span>
+                        <span id="resMaterial" class="font-mono">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between border-b border-indigo-800 pb-2">
+                        <span class="text-indigo-300">Energia (Tarifa 0.65)</span>
+                        <span id="resEnergia" class="font-mono">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold">CUSTO TOTAL OPERACIONAL</span>
+                        <span id="resCustoTotal" class="font-black text-emerald-400">R$ 0,00</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="lg:w-1/2 space-y-6">
+        <div class="lg:col-span-7 space-y-6">
             
-            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                <h2 class="text-xl font-bold mb-6">Preços sugeridos</h2>
-                
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                        <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs"><i class="fas fa-users"></i> Competitivo</div>
-                        <div class="text-xl font-black mt-1" id="pCompetitivo">R$ 0,00</div>
-                        <div class="text-[10px] text-emerald-500 uppercase font-bold">25% Lucro</div>
-                    </div>
-                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                        <div class="flex items-center gap-2 text-blue-600 font-bold text-xs"><i class="fas fa-bullseye"></i> Padrão</div>
-                        <div class="text-xl font-black mt-1" id="pPadrao">R$ 0,00</div>
-                        <div class="text-[10px] text-blue-500 uppercase font-bold">45% Lucro</div>
-                    </div>
-                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100">
-                        <div class="flex items-center gap-2 text-amber-600 font-bold text-xs"><i class="fas fa-crown"></i> Premium</div>
-                        <div class="text-xl font-black mt-1" id="pPremium">R$ 0,00</div>
-                        <div class="text-[10px] text-amber-500 uppercase font-bold">70% Lucro</div>
-                    </div>
-                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
-                        <div class="flex items-center gap-2 text-purple-600 font-bold text-xs"><i class="fas fa-gem"></i> Luxo</div>
-                        <div class="text-xl font-black mt-1" id="pLuxo">R$ 0,00</div>
-                        <div class="text-[10px] text-purple-500 uppercase font-bold">100% Lucro</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 card-stats">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Preço Sugerido Varejo</p>
+                    <h3 id="precoVarejo" class="text-4xl font-black text-slate-800 my-2">R$ 0,00</h3>
+                    <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs">
+                        <i class="fas fa-hand-holding-usd"></i> Lucro Líquido: <span id="lucroVarejo">R$ 0,00</span>
                     </div>
                 </div>
 
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-6">
-                    <div class="flex justify-between font-bold text-xs mb-4 uppercase">
-                        <span>Personalizado</span>
-                        <span id="sliderValue">50%</span>
-                    </div>
-                    <input type="range" id="margemSlider" min="10" max="300" value="50" oninput="calcularTudo()" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
-                    <div class="mt-4 flex justify-between items-center">
-                        <span class="text-2xl font-black text-indigo-600" id="pCustom">R$ 0,00</span>
-                        <button class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-100"><i class="fas fa-save mr-2"></i> Salvar</button>
-                    </div>
-                </div>
-
-                <hr class="my-8 border-slate-100">
-
-                <h2 class="text-sm font-bold uppercase text-slate-400 mb-6">Discriminação de custos</h2>
-                <div class="grid-blocks">
-                    <div class="bg-slate-50 p-4 rounded-xl">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Material</p>
-                        <p id="cMaterial" class="text-lg font-black italic">R$ 0,00</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Hardware</p>
-                        <p id="cHardware" class="text-lg font-black italic text-slate-500">R$ 0,00</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Energia/Depre.</p>
-                        <p id="cMaquina" class="text-lg font-black italic text-slate-500">R$ 0,00</p>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
-                        <p class="text-[10px] font-bold text-red-400 uppercase">Custo Total Entregue</p>
-                        <p id="cTotal" class="text-2xl font-black italic text-red-600">R$ 0,00</p>
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-orange-200 card-stats" style="border-left-color: #f97316;">
+                    <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest text-orange-500">Venda Shopee (Com taxas)</p>
+                    <h3 id="precoShopee" class="text-4xl font-black text-slate-800 my-2 text-orange-600">R$ 0,00</h3>
+                    <div class="flex items-center gap-2 text-orange-600 font-bold text-xs">
+                        <i class="fas fa-store"></i> Lucro Líquido: <span id="lucroShopee">R$ 0,00</span>
                     </div>
                 </div>
             </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h3 class="font-bold text-slate-700 text-sm uppercase">Detalhamento de Taxas Shopee (CNPJ)</h3>
+                </div>
+                <div class="p-6 space-y-4 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Comissão Shopee (20%)</span>
+                        <span id="taxaComissao" class="font-bold text-red-500">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Taxa Fixa por Item</span>
+                        <span class="font-bold text-red-500">R$ 4,00</span>
+                    </div>
+                    <div class="flex justify-between" id="rowCampanha">
+                        <span class="text-slate-500">Taxa de Campanha (2.5%)</span>
+                        <span id="taxaCampanha" class="font-bold text-red-500">R$ 0,00</span>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center font-black">
+                        <span class="text-slate-700">MARGEM EFETIVA FINAL</span>
+                        <span id="margemEfetiva" class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.01]">
+                <i class="fas fa-save mr-2"></i> SALVAR NO HISTÓRICO DE VENDAS
+            </button>
         </div>
-    </div>
+    </main>
 
     <script>
-        function calcularTudo() {
-            const peso = parseFloat(document.getElementById('pesoG').value) || 0;
-            const tempo = parseFloat(document.getElementById('tempoHrs').value) || 0;
-            const filamentoKg = parseFloat(document.getElementById('custoKg').value) || 0;
-            const maoObraMin = parseFloat(document.getElementById('maoObra').value) || 0;
-            const hardware = parseFloat(document.getElementById('hardware').value) || 0;
-            const embalagem = parseFloat(document.getElementById('embalagem').value) || 0;
-            const sliderVal = parseFloat(document.getElementById('margemSlider').value);
+        function calcular() {
+            // Inputs conforme sua planilha
+            const peso = parseFloat(document.getElementById('peso').value) || 0;
+            const tempo = parseFloat(document.getElementById('tempo').value) || 0;
+            const margemDesejada = (parseFloat(document.getElementById('margem').value) || 0) / 100;
+            const consumiveis = parseFloat(document.getElementById('consumiveis').value) || 0;
+            const participaCampanha = document.getElementById('campanha').checked;
 
-            // Cálculos Base
-            const materialTotal = (peso / 1000) * filamentoKg;
-            const energiaEDepre = (tempo * 2.15); // R$ 0,65 luz + R$ 1,50 depreciação/hora
-            const valorMaoObra = (maoObraMin / 60) * 25; // R$ 25,00/hora de trabalho humano
+            // Configurações Fixas da sua Aba "Configurações"
+            const precoFilamentoKg = 96.00;
+            const tarifaEnergia = 0.65;
+            const consumoW = 350;
+            const taxaFixaShopee = 4.00;
+            const comissaoPercent = 0.20;
+            const campanhaPercent = participaCampanha ? 0.025 : 0;
 
-            const custoTotal = materialTotal + energiaEDepre + valorMaoObra + hardware + embalagem;
+            // 1. Cálculos de Custo (Exato como no Excel)
+            const custoMaterial = (peso / 1000) * precoFilamentoKg;
+            const custoEnergia = (consumoW / 1000) * tempo * tarifaEnergia;
+            const custoTotal = custoMaterial + custoEnergia + consumiveis;
 
-            // Formatação
-            const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            // 2. Preço de Venda Varejo
+            const precoVarejo = custoTotal * (1 + margemDesejada);
+            const lucroVarejo = precoVarejo - custoTotal;
 
-            // Atualizar Discriminação
-            document.getElementById('pesoDisplay').innerText = peso;
-            document.getElementById('cMaterial').innerText = fmt(materialTotal);
-            document.getElementById('cHardware').innerText = fmt(hardware + embalagem);
-            document.getElementById('cMaquina').innerText = fmt(energiaEDepre);
-            document.getElementById('cTotal').innerText = fmt(custoTotal);
-
-            // Atualizar Preços Sugeridos
-            document.getElementById('pCompetitivo').innerText = fmt(custoTotal * 1.25);
-            document.getElementById('pPadrao').innerText = fmt(custoTotal * 1.45);
-            document.getElementById('pPremium').innerText = fmt(custoTotal * 1.70);
-            document.getElementById('pLuxo').innerText = fmt(custoTotal * 2.0);
+            // 3. Preço de Venda Shopee (Cálculo reverso para garantir a margem)
+            // Fórmula: Preço = (Custo + Taxa Fixa) / (1 - Comissao% - Campanha% - Margem%)
+            const divisor = (1 - comissaoPercent - campanhaPercent - margemDesejada);
+            let precoShopee = 0;
             
-            // Slider
-            document.getElementById('sliderValue').innerText = sliderVal + '%';
-            document.getElementById('pCustom').innerText = fmt(custoTotal * (1 + (sliderVal/100)));
+            if (divisor > 0) {
+                precoShopee = (custoTotal + taxaFixaShopee) / divisor;
+            } else {
+                precoShopee = (custoTotal + taxaFixaShopee) / 0.1; // Evita erro se a margem for alta demais
+            }
+
+            const valorComissao = precoShopee * comissaoPercent;
+            const valorCampanha = precoShopee * campanhaPercent;
+            const lucroShopee = precoShopee - custoTotal - valorComissao - valorCampanha - taxaFixaShopee;
+            const margemEfetiva = (lucroShopee / precoShopee) * 100;
+
+            // 4. Atualizar UI
+            const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            document.getElementById('resMaterial').innerText = fmt(custoMaterial);
+            document.getElementById('resEnergia').innerText = fmt(custoEnergia);
+            document.getElementById('resCustoTotal').innerText = fmt(custoTotal);
+
+            document.getElementById('precoVarejo').innerText = fmt(precoVarejo);
+            document.getElementById('lucroVarejo').innerText = fmt(lucroVarejo);
+
+            document.getElementById('precoShopee').innerText = fmt(precoShopee);
+            document.getElementById('lucroShopee').innerText = fmt(lucroShopee);
+            
+            document.getElementById('taxaComissao').innerText = fmt(valorComissao);
+            document.getElementById('taxaCampanha').innerText = fmt(valorCampanha);
+            document.getElementById('margemEfetiva').innerText = margemEfetiva.toFixed(1) + '%';
         }
 
-        // Iniciar
-        calcularTudo();
+        // Inicializa o cálculo
+        calcular();
     </script>
 </body>
 </html>
