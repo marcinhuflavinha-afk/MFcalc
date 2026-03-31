@@ -3,203 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MF CALC Pro - ERP 3D</title>
+    <title>MF CALC Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        input[type="range"] { accent-color: #6366f1; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .grid-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen font-sans text-slate-900">
+<body class="bg-[#f8fafc] min-h-screen text-slate-800 p-4 md:p-8">
 
-    <nav class="bg-indigo-900 text-white shadow-2xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="bg-white text-indigo-900 p-2 rounded-lg font-black text-xl">MF</div>
-                <h1 class="text-xl font-bold tracking-tight">CALC <span class="text-indigo-300 font-light text-sm">| GESTÃO 3D</span></h1>
-            </div>
-            <div class="flex items-center gap-4 text-xs font-medium uppercase tracking-widest opacity-80">
-                <span class="bg-green-500 w-2 h-2 rounded-full animate-pulse"></span> Bambu Lab A1 Ativa
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <p class="text-slate-500 text-xs font-bold uppercase">Receita Total</p>
-                <p id="vendaTotal" class="text-3xl font-black text-indigo-600">R$ 0,00</p>
-                <p class="text-[10px] text-green-600 mt-2 font-bold"><i class="fas fa-arrow-up"></i> Vendas Confirmadas</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <p class="text-slate-500 text-xs font-bold uppercase">Lucro Estimado</p>
-                <p id="lucroTotal" class="text-3xl font-black text-emerald-600">R$ 0,00</p>
-                <p class="text-[10px] text-slate-400 mt-2 italic">Descontando custos fixos</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <p class="text-slate-500 text-xs font-bold uppercase">Pedidos</p>
-                <p id="qtdVendas" class="text-3xl font-black text-slate-800">0</p>
-                <p class="text-[10px] text-slate-400 mt-2 font-bold">Produção em dia</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center">
-                <canvas id="miniChart" height="80"></canvas>
+        <div class="lg:w-1/2 space-y-6">
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                <h2 class="text-xl font-bold mb-6">Detalhes do projeto</h2>
+                
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Nome da peça</label>
+                            <input type="text" id="nomePeca" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: Action Figure">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Perfil da impressora</label>
+                            <select id="impressora" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl appearance-none">
+                                <option>Bambu Lab A1</option>
+                                <option>Bambu Lab P1P</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between text-xs font-bold uppercase text-slate-400 mb-4">
+                            <span>Filamento</span>
+                            <span>Peso Total: <span id="pesoDisplay">0</span>g</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="col-span-1">
+                                <select class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm"><option>PLA</option></select>
+                            </div>
+                            <div>
+                                <input type="number" id="custoKg" value="95" class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm font-bold text-indigo-600">
+                            </div>
+                            <div>
+                                <input type="number" id="pesoG" value="0" oninput="calcularTudo()" class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Tempo Impressão (hrs)</label>
+                            <input type="number" id="tempoHrs" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block">Mão de obra (min)</label>
+                            <input type="number" id="maoObra" value="10" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block text-xs">Custo Hardware (Parafuso, etc)</label>
+                            <input type="number" id="hardware" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 mb-2 block text-xs">Custo Embalagem</label>
+                            <input type="number" id="embalagem" value="0" oninput="calcularTudo()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:w-1/2 space-y-6">
             
-            <div class="lg:col-span-4 bg-white p-8 rounded-3xl shadow-sm border border-slate-200 h-fit">
-                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                    <i class="fas fa-cart-plus text-indigo-600"></i> Nova Venda
-                </h2>
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                <h2 class="text-xl font-bold mb-6">Preços sugeridos</h2>
                 
-                <div class="space-y-4">
-                    <input type="text" id="nomePeca" placeholder="Nome do Cliente / Peça" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500">
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                            <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Peso (g)</label>
-                            <input type="number" id="peso" placeholder="0" class="w-full bg-transparent text-center font-bold outline-none">
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                            <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Horas</label>
-                            <input type="number" id="tempo" placeholder="0" class="w-full bg-transparent text-center font-bold outline-none">
-                        </div>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                        <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs"><i class="fas fa-users"></i> Competitivo</div>
+                        <div class="text-xl font-black mt-1" id="pCompetitivo">R$ 0,00</div>
+                        <div class="text-[10px] text-emerald-500 uppercase font-bold">25% Lucro</div>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 ml-2">Filamento (kg)</label>
-                            <input type="number" id="precoFilamento" value="90" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 ml-2">Lucro %</label>
-                            <input type="number" id="lucro" value="150" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">
-                        </div>
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                        <div class="flex items-center gap-2 text-blue-600 font-bold text-xs"><i class="fas fa-bullseye"></i> Padrão</div>
+                        <div class="text-xl font-black mt-1" id="pPadrao">R$ 0,00</div>
+                        <div class="text-[10px] text-blue-500 uppercase font-bold">45% Lucro</div>
                     </div>
-
-                    <button onclick="registrarVenda()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1">
-                        CONFIRMAR VENDA
-                    </button>
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                        <div class="flex items-center gap-2 text-amber-600 font-bold text-xs"><i class="fas fa-crown"></i> Premium</div>
+                        <div class="text-xl font-black mt-1" id="pPremium">R$ 0,00</div>
+                        <div class="text-[10px] text-amber-500 uppercase font-bold">70% Lucro</div>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                        <div class="flex items-center gap-2 text-purple-600 font-bold text-xs"><i class="fas fa-gem"></i> Luxo</div>
+                        <div class="text-xl font-black mt-1" id="pLuxo">R$ 0,00</div>
+                        <div class="text-[10px] text-purple-500 uppercase font-bold">100% Lucro</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="lg:col-span-8 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h2 class="font-bold text-slate-700 uppercase tracking-tighter">Histórico de Vendas</h2>
-                    <button onclick="limparTudo()" class="text-[10px] text-red-400 hover:text-red-600 font-bold uppercase"><i class="fas fa-trash-alt mr-1"></i> Zerar Dados</button>
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-6">
+                    <div class="flex justify-between font-bold text-xs mb-4 uppercase">
+                        <span>Personalizado</span>
+                        <span id="sliderValue">50%</span>
+                    </div>
+                    <input type="range" id="margemSlider" min="10" max="300" value="50" oninput="calcularTudo()" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-2xl font-black text-indigo-600" id="pCustom">R$ 0,00</span>
+                        <button class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-100"><i class="fas fa-save mr-2"></i> Salvar</button>
+                    </div>
                 </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-50">
-                            <tr class="text-slate-400 text-[10px] uppercase">
-                                <th class="px-6 py-4">Data</th>
-                                <th class="px-6 py-4">Item/Cliente</th>
-                                <th class="px-6 py-4 text-center">Custo</th>
-                                <th class="px-6 py-4 text-right">Valor Venda</th>
-                                <th class="px-6 py-4"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaVendas" class="divide-y divide-slate-100 text-sm">
-                            </tbody>
-                    </table>
+
+                <hr class="my-8 border-slate-100">
+
+                <h2 class="text-sm font-bold uppercase text-slate-400 mb-6">Discriminação de custos</h2>
+                <div class="grid-blocks">
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Material</p>
+                        <p id="cMaterial" class="text-lg font-black italic">R$ 0,00</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Hardware</p>
+                        <p id="cHardware" class="text-lg font-black italic text-slate-500">R$ 0,00</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Energia/Depre.</p>
+                        <p id="cMaquina" class="text-lg font-black italic text-slate-500">R$ 0,00</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                        <p class="text-[10px] font-bold text-red-400 uppercase">Custo Total Entregue</p>
+                        <p id="cTotal" class="text-2xl font-black italic text-red-600">R$ 0,00</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        let vendas = JSON.parse(localStorage.getItem('mf_vendas_pro')) || [];
+        function calcularTudo() {
+            const peso = parseFloat(document.getElementById('pesoG').value) || 0;
+            const tempo = parseFloat(document.getElementById('tempoHrs').value) || 0;
+            const filamentoKg = parseFloat(document.getElementById('custoKg').value) || 0;
+            const maoObraMin = parseFloat(document.getElementById('maoObra').value) || 0;
+            const hardware = parseFloat(document.getElementById('hardware').value) || 0;
+            const embalagem = parseFloat(document.getElementById('embalagem').value) || 0;
+            const sliderVal = parseFloat(document.getElementById('margemSlider').value);
 
-        function atualizarDash() {
-            const lista = document.getElementById('listaVendas');
-            lista.innerHTML = '';
-            let totalReceita = 0;
-            let totalLucro = 0;
+            // Cálculos Base
+            const materialTotal = (peso / 1000) * filamentoKg;
+            const energiaEDepre = (tempo * 2.15); // R$ 0,65 luz + R$ 1,50 depreciação/hora
+            const valorMaoObra = (maoObraMin / 60) * 25; // R$ 25,00/hora de trabalho humano
 
-            vendas.forEach((v, index) => {
-                totalReceita += v.valor;
-                totalLucro += (v.valor - v.custo);
+            const custoTotal = materialTotal + energiaEDepre + valorMaoObra + hardware + embalagem;
 
-                lista.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 text-xs text-slate-400">${v.data}</td>
-                        <td class="px-6 py-4 font-bold text-slate-700">${v.nome}</td>
-                        <td class="px-6 py-4 text-center text-slate-400 font-medium italic">R$ ${v.custo.toFixed(2)}</td>
-                        <td class="px-6 py-4 text-right font-black text-indigo-600">R$ ${v.valor.toFixed(2)}</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="deletar(${index})" class="text-slate-300 hover:text-red-500 transition-colors"><i class="fas fa-times-circle"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
+            // Formatação
+            const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            document.getElementById('vendaTotal').innerText = `R$ ${totalReceita.toFixed(2)}`;
-            document.getElementById('lucroTotal').innerText = `R$ ${totalLucro.toFixed(2)}`;
-            document.getElementById('qtdVendas').innerText = vendas.length;
+            // Atualizar Discriminação
+            document.getElementById('pesoDisplay').innerText = peso;
+            document.getElementById('cMaterial').innerText = fmt(materialTotal);
+            document.getElementById('cHardware').innerText = fmt(hardware + embalagem);
+            document.getElementById('cMaquina').innerText = fmt(energiaEDepre);
+            document.getElementById('cTotal').innerText = fmt(custoTotal);
+
+            // Atualizar Preços Sugeridos
+            document.getElementById('pCompetitivo').innerText = fmt(custoTotal * 1.25);
+            document.getElementById('pPadrao').innerText = fmt(custoTotal * 1.45);
+            document.getElementById('pPremium').innerText = fmt(custoTotal * 1.70);
+            document.getElementById('pLuxo').innerText = fmt(custoTotal * 2.0);
             
-            localStorage.setItem('mf_vendas_pro', JSON.stringify(vendas));
+            // Slider
+            document.getElementById('sliderValue').innerText = sliderVal + '%';
+            document.getElementById('pCustom').innerText = fmt(custoTotal * (1 + (sliderVal/100)));
         }
 
-        function registrarVenda() {
-            const nome = document.getElementById('nomePeca').value || "Cliente s/ nome";
-            const peso = parseFloat(document.getElementById('peso').value);
-            const tempo = parseFloat(document.getElementById('tempo').value);
-            const precoKg = parseFloat(document.getElementById('precoFilamento').value);
-            const margem = parseFloat(document.getElementById('lucro').value) / 100;
-
-            if(!peso || !tempo) return alert("Preencha os dados da impressão!");
-
-            // CÁLCULO BAMBU LAB A1
-            const custoEnergia = (180 / 1000) * tempo * 0.65;
-            const custoMaterial = (peso / 1000) * precoKg;
-            const depreciacao = tempo * 0.85; // Manutenção e bico
-
-            const custoTotal = custoMaterial + custoEnergia + depreciacao;
-            const precoVenda = custoTotal * (1 + margem);
-
-            vendas.push({
-                data: new Date().toLocaleDateString('pt-BR'),
-                nome: nome,
-                custo: custoTotal,
-                valor: precoVenda
-            });
-
-            atualizarDash();
-            
-            // Feedback Visual
-            document.getElementById('nomePeca').value = '';
-            document.getElementById('peso').value = '';
-            document.getElementById('tempo').value = '';
-        }
-
-        function deletar(idx) { vendas.splice(idx, 1); atualizarDash(); }
-        function limparTudo() { if(confirm("Apagar todos os dados de vendas?")) { vendas = []; atualizarDash(); } }
-
-        atualizarDash();
-
-        // Mini Gráfico Simbólico
-        const ctx = document.getElementById('miniChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                datasets: [{
-                    label: 'Tendência',
-                    data: [12, 19, 15, 25, 22, 30, 45],
-                    borderColor: '#4f46e5',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { x: { display: false }, y: { display: false } }
-            }
-        });
+        // Iniciar
+        calcularTudo();
     </script>
 </body>
 </html>
